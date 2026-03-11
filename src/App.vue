@@ -4,7 +4,7 @@
     <v-app-bar color="primary" prominent>
       <v-app-bar-title>
         <v-icon icon="mdi-alien" class="mr-2" />
-        Rick & Morty Explorer
+        La super ligue turc
       </v-app-bar-title>
     </v-app-bar>
 
@@ -14,7 +14,7 @@
 
     <v-footer class="text-center">
       <v-col>
-        Démo C141 — ESIG {{ currentYear }} —
+        Projet C141 — Emre-Esig {{ currentYear }} —
         API
         <a href="https://rickandmortyapi.com" target="_blank" rel="noopener noreferrer" class="text-primary">
           rickandmortyapi.com
