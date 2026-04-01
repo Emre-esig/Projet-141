@@ -19,7 +19,12 @@
       <v-col>
         Projet C141 — Emre-Esig {{ currentYear }} —
         API
-        <a href="https://dashboard.api-football.com/" target="_blank" rel="noopener noreferrer" class="text-primary">
+        <a
+            href="https://dashboard.api-football.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-primary"
+        >
           api-football.com
         </a>
       </v-col>
@@ -28,5 +33,14 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
+import { usePlayerStore } from '@/stores/playerStore'
+
 const currentYear = new Date().getFullYear()
+
+const playerStore = usePlayerStore()
+
+onMounted(async () => {
+  await playerStore.init()
+})
 </script>
