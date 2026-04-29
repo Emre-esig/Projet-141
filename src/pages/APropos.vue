@@ -5,7 +5,7 @@
     <v-card max-width="800" class="mx-auto pa-4">
       <v-card-text>
         <p class="mb-4">
-          <strong>TopPlayers</strong> est une application développée avec Vue.js et Vuetify.
+          <strong>TopPlayers – Elite Football Stats</strong> est une application développée avec Vue.js et Vuetify.
         </p>
 
         <p class="mb-4">

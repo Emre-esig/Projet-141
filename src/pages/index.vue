@@ -8,7 +8,7 @@ const playerStore = usePlayerStore()
 
 <template>
   <v-container>
-    <h1 class="text-h4 mb-6">Top championnats</h1>
+    <h1 class="text-h4 mb-6">TopPlayers – Elite Football Stats</h1>
 
     <v-row>
       <v-col
