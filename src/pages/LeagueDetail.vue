@@ -1,31 +1,21 @@
 <script setup>
-import {computed, onMounted, ref} from 'vue'
-import {useRoute} from 'vue-router'
-import {usePlayerStore} from '@/stores/playerStore'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { usePlayerStore } from '@/stores/playerStore'
 
-// 1) On récupère la route actuelle (pour lire /league/:id)
 const route = useRoute()
-
-// 2) On récupère le store Pinia
 const playerStore = usePlayerStore()
 
-// 3) On lit l'id de la ligue depuis l'URL
-// Exemple: /league/39 -> leagueId = 39
 const leagueId = computed(() => Number(route.params.id))
-
-// 4) On récupère les infos de la ligue (nom, logo, pays) depuis le store
 const league = computed(() => playerStore.getLeagueById(leagueId.value))
 
-// 5) Variables pour les recherches et les tris
 const searchPlayer = ref('')
 const searchTeam = ref('')
 const sortOption = ref('goalsDesc')
 
-// 6) Liste des joueurs filtrée et triée
 const filteredPlayers = computed(() => {
   let players = [...playerStore.players]
 
-  // Recherche par nom du joueur
   if (searchPlayer.value) {
     players = players.filter(playerData =>
         playerData.player?.name
@@ -34,7 +24,6 @@ const filteredPlayers = computed(() => {
     )
   }
 
-  // Recherche par nom du club
   if (searchTeam.value) {
     players = players.filter(playerData =>
         playerData.statistics?.[0]?.team?.name
@@ -43,7 +32,6 @@ const filteredPlayers = computed(() => {
     )
   }
 
-  // Tri par buts décroissant
   if (sortOption.value === 'goalsDesc') {
     players.sort((a, b) =>
         (b.statistics?.[0]?.goals?.total ?? 0) -
@@ -51,7 +39,6 @@ const filteredPlayers = computed(() => {
     )
   }
 
-  // Tri par buts croissant
   if (sortOption.value === 'goalsAsc') {
     players.sort((a, b) =>
         (a.statistics?.[0]?.goals?.total ?? 0) -
@@ -59,21 +46,18 @@ const filteredPlayers = computed(() => {
     )
   }
 
-  // Tri par nom A-Z
   if (sortOption.value === 'nameAsc') {
     players.sort((a, b) =>
         (a.player?.name || '').localeCompare(b.player?.name || '')
     )
   }
 
-  // Tri par nom Z-A
   if (sortOption.value === 'nameDesc') {
     players.sort((a, b) =>
         (b.player?.name || '').localeCompare(a.player?.name || '')
     )
   }
 
-  // Tri par club A-Z
   if (sortOption.value === 'teamAsc') {
     players.sort((a, b) =>
         (a.statistics?.[0]?.team?.name || '').localeCompare(
@@ -85,18 +69,13 @@ const filteredPlayers = computed(() => {
   return players.slice(0, 15)
 })
 
-// 7) Quand la page s'affiche, on lance l'appel API pour charger les joueurs
 onMounted(() => {
-  // Contrainte demandée: appel avec route.params.id
   playerStore.fetchTopPlayersByLeague(route.params.id)
 })
 </script>
 
 <template>
   <v-container>
-    <!-- =========================
-         EN-TETE: infos de la ligue
-         ========================= -->
     <v-card class="mb-6 pa-4" variant="tonal">
       <div v-if="league" class="text-center">
         <v-img
@@ -120,9 +99,6 @@ onMounted(() => {
       </v-alert>
     </v-card>
 
-    <!-- =========================
-         BARRE DE RECHERCHE ET TRI
-         ========================= -->
     <v-card class="mb-6 pa-4">
       <v-row>
         <v-col cols="12" md="4">
@@ -165,18 +141,12 @@ onMounted(() => {
       </v-row>
     </v-card>
 
-    <!-- =========================
-         ETAT 1: Chargement
-         ========================= -->
     <v-row v-if="playerStore.isLoading">
       <v-col v-for="n in 6" :key="n" cols="12" sm="6" md="4">
-        <v-skeleton-loader type="card"/>
+        <v-skeleton-loader type="card" />
       </v-col>
     </v-row>
 
-    <!-- =========================
-         ETAT 2: Erreur
-         ========================= -->
     <v-alert
         v-else-if="playerStore.error"
         type="error"
@@ -186,9 +156,6 @@ onMounted(() => {
       {{ playerStore.error }}
     </v-alert>
 
-    <!-- =========================
-         ETAT 3: Donnees joueurs
-         ========================= -->
     <v-row v-else>
       <v-col
           v-for="playerData in filteredPlayers"
@@ -197,7 +164,16 @@ onMounted(() => {
           sm="6"
           md="4"
       >
-        <v-card class="h-100 pa-2">
+        <v-card class="h-100 pa-2 position-relative">
+          <v-btn
+              class="position-absolute favorite-btn"
+              style="top: 10px; right: 10px; z-index: 2;"
+              :icon="playerStore.isFavorite(playerData.player?.id) ? 'mdi-heart' : 'mdi-heart-outline'"
+              :color="playerStore.isFavorite(playerData.player?.id) ? 'red' : 'grey'"
+              variant="text"
+              @click="playerStore.toggleFavorite(playerData)"
+          />
+
           <div class="d-flex justify-center align-center" style="height: 200px;">
             <v-img
                 :src="playerData.player?.photo"
@@ -243,3 +219,13 @@ onMounted(() => {
     </v-row>
   </v-container>
 </template>
+
+<style scoped>
+.favorite-btn {
+  transition: transform 0.2s ease;
+}
+
+.favorite-btn:hover {
+  transform: scale(1.25);
+}
+</style>

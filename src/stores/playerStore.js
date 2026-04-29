@@ -41,10 +41,10 @@ export const usePlayerStore = defineStore('player', {
                 logo: 'https://media.api-sports.io/football/leagues/203.png'
             },
             {
-              id: 107,
-              name: 'Eredivisie',
-              country: 'Pays-Bas',
-              logo: 'https://media.api-sports.io/football/leagues/107.png'
+                id: 107,
+                name: 'Eredivisie',
+                country: 'Pays-Bas',
+                logo: 'https://media.api-sports.io/football/leagues/107.png'
             },
             {
                 id: 550,
@@ -61,6 +61,7 @@ export const usePlayerStore = defineStore('player', {
         ],
 
         players: [],
+        favoritePlayers: [],
         isLoading: false,
         error: null
     }),
@@ -68,6 +69,14 @@ export const usePlayerStore = defineStore('player', {
     getters: {
         getLeagueById: (state) => (leagueId) => {
             return state.leagues.find(league => league.id === Number(leagueId))
+        },
+
+        isFavorite: (state) => (playerId) => {
+            return state.favoritePlayers.some(playerData => playerData.player?.id === playerId)
+        },
+
+        totalFavorites: (state) => {
+            return state.favoritePlayers.length
         }
     },
 
@@ -85,12 +94,39 @@ export const usePlayerStore = defineStore('player', {
                 })
 
                 this.players = response.data.response
+                this.loadFavorites()
             } catch (error) {
                 console.error('Erreur API :', error)
                 this.players = []
                 this.error = 'Impossible de charger les joueurs.'
             } finally {
                 this.isLoading = false
+            }
+        },
+
+        toggleFavorite(playerData) {
+            const index = this.favoritePlayers.findIndex(favorite =>
+                favorite.player?.id === playerData.player?.id
+            )
+
+            if (index === -1) {
+                this.favoritePlayers.push(playerData)
+            } else {
+                this.favoritePlayers.splice(index, 1)
+            }
+
+            this.saveFavorites()
+        },
+
+        saveFavorites() {
+            localStorage.setItem('favoritePlayers', JSON.stringify(this.favoritePlayers))
+        },
+
+        loadFavorites() {
+            const savedFavorites = localStorage.getItem('favoritePlayers')
+
+            if (savedFavorites) {
+                this.favoritePlayers = JSON.parse(savedFavorites)
             }
         }
     }
