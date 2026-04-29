@@ -39,6 +39,24 @@ export const usePlayerStore = defineStore('player', {
                 name: 'Süper Lig',
                 country: 'Turquie',
                 logo: 'https://media.api-sports.io/football/leagues/203.png'
+            },
+            {
+              id: 107,
+              name: 'Eredivisie',
+              country: 'Pays-Bas',
+              logo: 'https://media.api-sports.io/football/leagues/107.png'
+            },
+            {
+                id: 550,
+                name: 'Primeira Liga',
+                country: 'Portugal',
+                logo: 'https://media.api-sports.io/football/leagues/550.png'
+            },
+            {
+                id: 207,
+                name: 'Super League',
+                country: 'Suisse',
+                logo: 'https://media.api-sports.io/football/leagues/207.png'
             }
         ],
 

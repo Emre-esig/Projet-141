@@ -1,16 +1,34 @@
 <template>
   <v-app>
     <!-- Barre du haut -->
-    <v-app-bar color="primary" prominent>
-      <v-app-bar-title>
-        <v-icon icon="mdi-alien" class="mr-2" />
-        Football API - Projet C141
-      </v-app-bar-title>
+    <v-app-bar color="primary" height="70" flat>
+      <!-- Bloc gauche (logo + texte) -->
+      <div class="d-flex align-center ml-4">
+        <v-img
+            src="/cr7-logo-png-transparent.png"
+            width="45"
+            height="45"
+            class="mr-3"
+        />
+
+        <div class="d-flex flex-column">
+      <span class="text-h6 font-weight-bold">
+        Football API
+      </span>
+          <span class="text-caption">
+        Projet C141
+      </span>
+        </div>
+      </div>
+
+      <v-spacer />
 
       <!-- Navigation -->
-      <v-btn to="/" variant="text">Accueil</v-btn>
-      <v-btn to="/favoris" variant="text">Favoris</v-btn>
-      <v-btn to="/a-propos" variant="text">À propos</v-btn>
+      <div class="mr-4">
+        <v-btn to="/" variant="text">Accueil</v-btn>
+        <v-btn to="/favoris" variant="text">Favoris</v-btn>
+        <v-btn to="/a-propos" variant="text">À propos</v-btn>
+      </div>
     </v-app-bar>
 
     <!-- Contenu des pages -->
