@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import api from '@/plugins/axios'
 
 export const usePlayerStore = defineStore('player', {
     state: () => ({
@@ -40,57 +41,39 @@ export const usePlayerStore = defineStore('player', {
                 logo: 'https://media.api-sports.io/football/leagues/203.png'
             }
         ],
-        topScorersByLeague: {},
-        loading: false,
+
+        players: [],
+        isLoading: false,
         error: null
     }),
 
     getters: {
-        getLeagueById: (state) => {
-            return (leagueId) =>
-                state.leagues.find(league => league.id === Number(leagueId))
-        },
-
-        getTopScorersByLeague: (state) => {
-            return (leagueId) => state.topScorersByLeague[leagueId] || []
+        getLeagueById: (state) => (leagueId) => {
+            return state.leagues.find(league => league.id === Number(leagueId))
         }
     },
 
     actions: {
-        async fetchTopScorersByLeague(leagueId) {
-            if (this.topScorersByLeague[leagueId]) {
-                return
-            }
-
-            this.loading = true
+        async fetchTopPlayersByLeague(leagueId) {
+            this.isLoading = true
             this.error = null
 
             try {
-                const response = await fetch(
-                    `https://v3.football.api-sports.io/players/topscorers?league=${leagueId}&season=2023`,
-                    {
-                        headers: {
-                            'x-apisports-key': '12e804a9f1d0a2b8a9da6f1951f992a2'
-                        }
+                const response = await api.get('/players/topscorers', {
+                    params: {
+                        league: leagueId,
+                        season: 2024
                     }
-                )
+                })
 
-                if (!response.ok) {
-                    throw new Error('Erreur lors du chargement des joueurs')
-                }
-
-                const data = await response.json()
-                this.topScorersByLeague[leagueId] = data.response.slice(0, 10)
-            } catch (err) {
-                this.error = 'Erreur lors du chargement des joueurs'
-                console.error(err)
+                this.players = response.data.response
+            } catch (error) {
+                console.error('Erreur API :', error)
+                this.players = []
+                this.error = 'Impossible de charger les joueurs.'
             } finally {
-                this.loading = false
+                this.isLoading = false
             }
-        },
-
-        init() {
-            this.error = null
         }
     }
 })

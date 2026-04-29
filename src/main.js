@@ -1,25 +1,28 @@
 /**
  * main.js
- *
- * Bootstraps Vuetify and other plugins then mounts the App
+ * Point de départ de l'application
  */
 
-// Plugins
+// On importe les plugins (Vuetify, router, etc.)
 import { registerPlugins } from '@/plugins'
 
-// Components
+// On importe le composant principal
 import App from './App.vue'
 
-// Vue
+// Fonction pour créer l'application Vue
 import { createApp } from 'vue'
 
-// Pinia
+// Pinia (gestion d'état global)
 import { createPinia } from 'pinia'
 
+// On crée l'application
 const app = createApp(App)
 
+// On active Pinia (TRÈS IMPORTANT sinon ça ne marche pas)
 app.use(createPinia())
 
+// On enregistre les autres plugins (router, vuetify...)
 registerPlugins(app)
 
+// On monte l'application dans le HTML (#app)
 app.mount('#app')
