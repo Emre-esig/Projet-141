@@ -1,9 +1,10 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { usePlayerStore } from '@/stores/playerStore'
 
 const route = useRoute()
+const router = useRouter()
 const playerStore = usePlayerStore()
 
 const leagueId = computed(() => Number(route.params.id))
@@ -69,6 +70,10 @@ const filteredPlayers = computed(() => {
   return players.slice(0, 15)
 })
 
+const goHome = () => {
+  router.push('/')
+}
+
 onMounted(() => {
   playerStore.fetchTopPlayersByLeague(route.params.id)
 })
@@ -76,22 +81,33 @@ onMounted(() => {
 
 <template>
   <v-container>
-    <v-card class="mb-6 pa-4" variant="tonal">
-      <div v-if="league" class="text-center">
-        <v-img
-            :src="league.logo"
-            :alt="`Logo ${league.name}`"
-            width="80"
-            height="80"
-            class="mx-auto mb-2"
-            contain
-        />
+    <v-card class="mb-6 pa-4 league-header-card" variant="tonal">
+      <div v-if="league" class="league-header">
+        <v-btn
+            class="back-btn"
+            prepend-icon="mdi-arrow-left"
+            variant="outlined"
+            @click="goHome"
+        >
+          Retour
+        </v-btn>
 
-        <h1 class="text-h4 mb-1">{{ league.name }}</h1>
+        <div class="league-info text-center">
+          <v-img
+              :src="league.logo"
+              :alt="`Logo ${league.name}`"
+              width="80"
+              height="80"
+              class="mx-auto mb-2"
+              contain
+          />
 
-        <p class="text-subtitle-1 text-medium-emphasis mb-0">
-          {{ league.country }}
-        </p>
+          <h1 class="text-h4 mb-1">{{ league.name }}</h1>
+
+          <p class="text-subtitle-1 text-medium-emphasis mb-0">
+            {{ league.country }}
+          </p>
+        </div>
       </div>
 
       <v-alert v-else type="warning" variant="tonal">
@@ -221,11 +237,43 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.league-header-card {
+  position: relative;
+}
+
+.league-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-btn {
+  position: absolute;
+  left: 0;
+}
+
+.league-info {
+  width: 100%;
+}
+
 .favorite-btn {
   transition: transform 0.2s ease;
 }
 
 .favorite-btn:hover {
   transform: scale(1.25);
+}
+
+@media (max-width: 600px) {
+  .league-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .back-btn {
+    position: static;
+    align-self: flex-start;
+  }
 }
 </style>
