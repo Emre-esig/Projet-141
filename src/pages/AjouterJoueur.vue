@@ -14,6 +14,7 @@ const color = ref('success')
 const player = ref({
   name: '',
   team: '',
+  leagueId: null,
   photo: '',
   goals: 0,
   assists: 0,
@@ -40,7 +41,7 @@ const addPlayer = async () => {
 
   if (result.success) {
     setTimeout(() => {
-      router.push('/favoris')
+      router.push(`/league/${player.value.leagueId}`)
     }, 800)
   }
 }
@@ -64,6 +65,16 @@ const addPlayer = async () => {
         <v-text-field
             v-model="player.team"
             label="Équipe"
+            variant="outlined"
+            :rules="[rules.required]"
+        />
+
+        <v-select
+            v-model="player.leagueId"
+            label="Ligue"
+            :items="playerStore.leagues"
+            item-title="name"
+            item-value="id"
             variant="outlined"
             :rules="[rules.required]"
         />

@@ -28,7 +28,6 @@
         <v-btn to="/" variant="text">Accueil</v-btn>
         <v-btn to="/favoris" variant="text">Favoris</v-btn>
         <v-btn to="/ajouter" variant="text" v-if="authStore.isLoggedIn">Ajouter</v-btn>
-        <v-btn to="/a-propos" variant="text">À propos</v-btn>
 
         <v-btn
             v-if="!authStore.isLoggedIn"

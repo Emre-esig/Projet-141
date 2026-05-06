@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Index from '../pages/index.vue'
 import LeagueDetail from '../pages/LeagueDetail.vue'
 import Favoris from '../pages/Favoris.vue'
-import APropos from '../pages/APropos.vue'
 import NotFound from '../pages/NotFound.vue'
 import Login from '../pages/Login.vue'
 import AjouterJoueur from '../pages/AjouterJoueur.vue'
@@ -41,11 +40,6 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: Login
-    },
-    {
-      path: '/a-propos',
-      name: 'a-propos',
-      component: APropos
     },
     {
       path: '/:pathMatch(.*)*',

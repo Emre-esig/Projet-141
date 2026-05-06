@@ -61,6 +61,7 @@ export const usePlayerStore = defineStore('player', {
         ],
 
         players: [],
+        customPlayers: [],
         favoritePlayers: [],
         isLoading: false,
         error: null
@@ -69,6 +70,12 @@ export const usePlayerStore = defineStore('player', {
     getters: {
         getLeagueById: (state) => (leagueId) => {
             return state.leagues.find(league => league.id === Number(leagueId))
+        },
+
+        getCustomPlayersByLeague: (state) => (leagueId) => {
+            return state.customPlayers.filter(playerData =>
+                playerData.leagueId === Number(leagueId)
+            )
         },
 
         isFavorite: (state) => (playerId) => {
@@ -95,49 +102,28 @@ export const usePlayerStore = defineStore('player', {
 
                 this.players = response.data.response
                 this.loadFavorites()
+                this.loadCustomPlayers()
             } catch (error) {
                 console.error('Erreur API :', error)
                 this.players = []
                 this.error = 'Impossible de charger les joueurs.'
+                this.loadCustomPlayers()
             } finally {
                 this.isLoading = false
             }
         },
 
-        toggleFavorite(playerData) {
-            const index = this.favoritePlayers.findIndex(favorite =>
-                favorite.player?.id === playerData.player?.id
-            )
-
-            if (index === -1) {
-                this.favoritePlayers.push(playerData)
-            } else {
-                this.favoritePlayers.splice(index, 1)
-            }
-
-            this.saveFavorites()
-        },
-
-        saveFavorites() {
-            localStorage.setItem('favoritePlayers', JSON.stringify(this.favoritePlayers))
-        },
-
-        loadFavorites() {
-            const savedFavorites = localStorage.getItem('favoritePlayers')
-
-            if (savedFavorites) {
-                this.favoritePlayers = JSON.parse(savedFavorites)
-            }
-        },
         addCustomPlayer(playerData) {
-            if (!playerData.name || !playerData.team) {
+            if (!playerData.name || !playerData.team || !playerData.leagueId) {
                 return {
                     success: false,
-                    message: 'Le nom du joueur et l’équipe sont obligatoires.'
+                    message: 'Le nom du joueur, l’équipe et la ligue sont obligatoires.'
                 }
             }
 
             const newPlayer = {
+                leagueId: Number(playerData.leagueId),
+                custom: true,
                 player: {
                     id: Date.now(),
                     name: playerData.name,
@@ -156,17 +142,43 @@ export const usePlayerStore = defineStore('player', {
                             appearences: Number(playerData.appearances) || 0
                         }
                     }
-                ],
-                custom: true
+                ]
             }
 
-            this.favoritePlayers.push(newPlayer)
-            this.saveFavorites()
+            this.customPlayers.push(newPlayer)
+            this.saveCustomPlayers()
 
             return {
                 success: true,
-                message: 'Joueur ajouté aux favoris avec succès.'
+                message: 'Joueur ajouté dans la ligue avec succès.'
             }
+        },
+
+        deleteCustomPlayer(playerId) {
+            this.customPlayers = this.customPlayers.filter(playerData =>
+                playerData.player?.id !== playerId
+            )
+
+            this.favoritePlayers = this.favoritePlayers.filter(playerData =>
+                playerData.player?.id !== playerId
+            )
+
+            this.saveCustomPlayers()
+            this.saveFavorites()
+        },
+
+        toggleFavorite(playerData) {
+            const index = this.favoritePlayers.findIndex(favorite =>
+                favorite.player?.id === playerData.player?.id
+            )
+
+            if (index === -1) {
+                this.favoritePlayers.push(playerData)
+            } else {
+                this.favoritePlayers.splice(index, 1)
+            }
+
+            this.saveFavorites()
         },
 
         deleteFavorite(playerId) {
@@ -175,6 +187,30 @@ export const usePlayerStore = defineStore('player', {
             )
 
             this.saveFavorites()
+        },
+
+        saveFavorites() {
+            localStorage.setItem('favoritePlayers', JSON.stringify(this.favoritePlayers))
+        },
+
+        loadFavorites() {
+            const savedFavorites = localStorage.getItem('favoritePlayers')
+
+            if (savedFavorites) {
+                this.favoritePlayers = JSON.parse(savedFavorites)
+            }
+        },
+
+        saveCustomPlayers() {
+            localStorage.setItem('customPlayers', JSON.stringify(this.customPlayers))
+        },
+
+        loadCustomPlayers() {
+            const savedCustomPlayers = localStorage.getItem('customPlayers')
+
+            if (savedCustomPlayers) {
+                this.customPlayers = JSON.parse(savedCustomPlayers)
+            }
         }
     }
 })

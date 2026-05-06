@@ -2,10 +2,12 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { usePlayerStore } from '@/stores/playerStore'
+import { useAuthStore } from '@/stores/authStore'
 
 const route = useRoute()
 const router = useRouter()
 const playerStore = usePlayerStore()
+const authStore = useAuthStore()
 
 const leagueId = computed(() => Number(route.params.id))
 const league = computed(() => playerStore.getLeagueById(leagueId.value))
@@ -14,8 +16,15 @@ const searchPlayer = ref('')
 const searchTeam = ref('')
 const sortOption = ref('goalsDesc')
 
+const allPlayers = computed(() => {
+  const apiPlayers = playerStore.players
+  const customPlayers = playerStore.getCustomPlayersByLeague(leagueId.value)
+
+  return [...apiPlayers, ...customPlayers]
+})
+
 const filteredPlayers = computed(() => {
-  let players = [...playerStore.players]
+  let players = [...allPlayers.value]
 
   if (searchPlayer.value) {
     players = players.filter(playerData =>
@@ -164,7 +173,7 @@ onMounted(() => {
     </v-row>
 
     <v-alert
-        v-else-if="playerStore.error"
+        v-else-if="playerStore.error && allPlayers.length === 0"
         type="error"
         variant="tonal"
         class="mb-4"
@@ -188,6 +197,16 @@ onMounted(() => {
               :color="playerStore.isFavorite(playerData.player?.id) ? 'red' : 'grey'"
               variant="text"
               @click="playerStore.toggleFavorite(playerData)"
+          />
+
+          <v-btn
+              v-if="playerData.custom && authStore.isLoggedIn"
+              class="position-absolute"
+              style="top: 50px; right: 10px; z-index: 2;"
+              icon="mdi-delete"
+              color="red"
+              variant="text"
+              @click="playerStore.deleteCustomPlayer(playerData.player?.id)"
           />
 
           <div class="d-flex justify-center align-center" style="height: 200px;">
@@ -223,6 +242,15 @@ onMounted(() => {
               <strong>Matchs:</strong>
               {{ playerData.statistics?.[0]?.games?.appearences ?? 0 }}
             </div>
+
+            <v-chip
+                v-if="playerData.custom"
+                color="primary"
+                variant="tonal"
+                class="mt-3"
+            >
+              Joueur personnalisé
+            </v-chip>
           </v-card-text>
         </v-card>
       </v-col>
