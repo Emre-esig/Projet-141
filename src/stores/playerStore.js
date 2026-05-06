@@ -1,69 +1,28 @@
 import { defineStore } from 'pinia'
 import api from '@/plugins/axios'
 
+const DEFAULT_PLAYER_IMAGE = '/default-player.jpg'
+
 export const usePlayerStore = defineStore('player', {
     state: () => ({
         leagues: [
-            {
-                id: 39,
-                name: 'Premier League',
-                country: 'Angleterre',
-                logo: 'https://media.api-sports.io/football/leagues/39.png'
-            },
-            {
-                id: 140,
-                name: 'La Liga',
-                country: 'Espagne',
-                logo: 'https://media.api-sports.io/football/leagues/140.png'
-            },
-            {
-                id: 61,
-                name: 'Ligue 1',
-                country: 'France',
-                logo: 'https://media.api-sports.io/football/leagues/61.png'
-            },
-            {
-                id: 78,
-                name: 'Bundesliga',
-                country: 'Allemagne',
-                logo: 'https://media.api-sports.io/football/leagues/78.png'
-            },
-            {
-                id: 135,
-                name: 'Serie A',
-                country: 'Italie',
-                logo: 'https://media.api-sports.io/football/leagues/135.png'
-            },
-            {
-                id: 203,
-                name: 'Süper Lig',
-                country: 'Turquie',
-                logo: 'https://media.api-sports.io/football/leagues/203.png'
-            },
-            {
-                id: 107,
-                name: 'Eredivisie',
-                country: 'Pays-Bas',
-                logo: 'https://media.api-sports.io/football/leagues/107.png'
-            },
-            {
-                id: 550,
-                name: 'Primeira Liga',
-                country: 'Portugal',
-                logo: 'https://media.api-sports.io/football/leagues/550.png'
-            },
-            {
-                id: 207,
-                name: 'Super League',
-                country: 'Suisse',
-                logo: 'https://media.api-sports.io/football/leagues/207.png'
-            }
+            { id: 39, name: 'Premier League', country: 'Angleterre', logo: 'https://media.api-sports.io/football/leagues/39.png' },
+            { id: 140, name: 'La Liga', country: 'Espagne', logo: 'https://media.api-sports.io/football/leagues/140.png' },
+            { id: 61, name: 'Ligue 1', country: 'France', logo: 'https://media.api-sports.io/football/leagues/61.png' },
+            { id: 78, name: 'Bundesliga', country: 'Allemagne', logo: 'https://media.api-sports.io/football/leagues/78.png' },
+            { id: 135, name: 'Serie A', country: 'Italie', logo: 'https://media.api-sports.io/football/leagues/135.png' },
+            { id: 203, name: 'Süper Lig', country: 'Turquie', logo: 'https://media.api-sports.io/football/leagues/203.png' },
+            { id: 107, name: 'Eredivisie', country: 'Pays-Bas', logo: 'https://media.api-sports.io/football/leagues/107.png' },
+            { id: 550, name: 'Primeira Liga', country: 'Portugal', logo: 'https://media.api-sports.io/football/leagues/550.png' },
+            { id: 207, name: 'Super League', country: 'Suisse', logo: 'https://media.api-sports.io/football/leagues/207.png' }
         ],
 
         players: [],
         customPlayers: [],
         favoritePlayers: [],
+        teams: [],
         isLoading: false,
+        isLoadingTeams: false,
         error: null
     }),
 
@@ -79,7 +38,9 @@ export const usePlayerStore = defineStore('player', {
         },
 
         isFavorite: (state) => (playerId) => {
-            return state.favoritePlayers.some(playerData => playerData.player?.id === playerId)
+            return state.favoritePlayers.some(playerData =>
+                playerData.player?.id === playerId
+            )
         },
 
         totalFavorites: (state) => {
@@ -92,6 +53,9 @@ export const usePlayerStore = defineStore('player', {
             this.isLoading = true
             this.error = null
 
+            this.loadFavorites()
+            this.loadCustomPlayers()
+
             try {
                 const response = await api.get('/players/topscorers', {
                     params: {
@@ -101,15 +65,37 @@ export const usePlayerStore = defineStore('player', {
                 })
 
                 this.players = response.data.response
-                this.loadFavorites()
-                this.loadCustomPlayers()
             } catch (error) {
                 console.error('Erreur API :', error)
                 this.players = []
                 this.error = 'Impossible de charger les joueurs.'
-                this.loadCustomPlayers()
             } finally {
                 this.isLoading = false
+            }
+        },
+
+        async fetchTeamsByLeague(leagueId) {
+            this.isLoadingTeams = true
+            this.teams = []
+
+            try {
+                const response = await api.get('/teams', {
+                    params: {
+                        league: leagueId,
+                        season: 2024
+                    }
+                })
+
+                this.teams = response.data.response.map(item => ({
+                    id: item.team.id,
+                    name: item.team.name,
+                    logo: item.team.logo
+                }))
+            } catch (error) {
+                console.error('Erreur API équipes :', error)
+                this.teams = []
+            } finally {
+                this.isLoadingTeams = false
             }
         },
 
@@ -121,18 +107,24 @@ export const usePlayerStore = defineStore('player', {
                 }
             }
 
+            const selectedTeam = this.teams.find(team => team.name === playerData.team)
+
             const newPlayer = {
                 leagueId: Number(playerData.leagueId),
                 custom: true,
                 player: {
                     id: Date.now(),
-                    name: playerData.name,
-                    photo: playerData.photo || 'https://via.placeholder.com/150'
+                    name: playerData.name.trim(),
+                    photo: playerData.photo?.trim()
+                        ? playerData.photo.trim()
+                        : DEFAULT_PLAYER_IMAGE
                 },
                 statistics: [
                     {
                         team: {
-                            name: playerData.team
+                            id: selectedTeam?.id || null,
+                            name: playerData.team.trim(),
+                            logo: selectedTeam?.logo || null
                         },
                         goals: {
                             total: Number(playerData.goals) || 0,

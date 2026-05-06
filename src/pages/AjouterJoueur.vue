@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePlayerStore } from '@/stores/playerStore'
 
@@ -25,6 +25,17 @@ const rules = {
   required: value => !!value || 'Champ obligatoire',
   positive: value => value >= 0 || 'La valeur doit être positive'
 }
+
+watch(
+    () => player.value.leagueId,
+    async (newLeagueId) => {
+      player.value.team = ''
+
+      if (newLeagueId) {
+        await playerStore.fetchTeamsByLeague(newLeagueId)
+      }
+    }
+)
 
 const addPlayer = async () => {
   const resultValidation = await form.value.validate()
@@ -62,13 +73,6 @@ const addPlayer = async () => {
             :rules="[rules.required]"
         />
 
-        <v-text-field
-            v-model="player.team"
-            label="Équipe"
-            variant="outlined"
-            :rules="[rules.required]"
-        />
-
         <v-select
             v-model="player.leagueId"
             label="Ligue"
@@ -77,6 +81,19 @@ const addPlayer = async () => {
             item-value="id"
             variant="outlined"
             :rules="[rules.required]"
+        />
+
+        <v-select
+            v-model="player.team"
+            label="Équipe"
+            :items="playerStore.teams"
+            item-title="name"
+            item-value="name"
+            variant="outlined"
+            :rules="[rules.required]"
+            :loading="playerStore.isLoadingTeams"
+            :disabled="!player.leagueId"
+            no-data-text="Aucune équipe trouvée"
         />
 
         <v-text-field

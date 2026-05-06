@@ -67,7 +67,15 @@ const confirmDelete = () => {
                 :alt="`Photo de ${playerData.player?.name || 'joueur'}`"
                 max-width="140"
                 contain
-            />
+            >
+              <template #error>
+                <v-img
+                    src="/default-player.jpg"
+                    max-width="140"
+                    contain
+                />
+              </template>
+            </v-img>
           </div>
 
           <v-card-title class="text-subtitle-1 font-weight-bold">
