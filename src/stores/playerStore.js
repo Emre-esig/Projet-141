@@ -128,6 +128,53 @@ export const usePlayerStore = defineStore('player', {
             if (savedFavorites) {
                 this.favoritePlayers = JSON.parse(savedFavorites)
             }
+        },
+        addCustomPlayer(playerData) {
+            if (!playerData.name || !playerData.team) {
+                return {
+                    success: false,
+                    message: 'Le nom du joueur et l’équipe sont obligatoires.'
+                }
+            }
+
+            const newPlayer = {
+                player: {
+                    id: Date.now(),
+                    name: playerData.name,
+                    photo: playerData.photo || 'https://via.placeholder.com/150'
+                },
+                statistics: [
+                    {
+                        team: {
+                            name: playerData.team
+                        },
+                        goals: {
+                            total: Number(playerData.goals) || 0,
+                            assists: Number(playerData.assists) || 0
+                        },
+                        games: {
+                            appearences: Number(playerData.appearances) || 0
+                        }
+                    }
+                ],
+                custom: true
+            }
+
+            this.favoritePlayers.push(newPlayer)
+            this.saveFavorites()
+
+            return {
+                success: true,
+                message: 'Joueur ajouté aux favoris avec succès.'
+            }
+        },
+
+        deleteFavorite(playerId) {
+            this.favoritePlayers = this.favoritePlayers.filter(playerData =>
+                playerData.player?.id !== playerId
+            )
+
+            this.saveFavorites()
         }
     }
 })

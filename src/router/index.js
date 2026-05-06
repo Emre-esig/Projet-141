@@ -4,6 +4,9 @@ import LeagueDetail from '../pages/LeagueDetail.vue'
 import Favoris from '../pages/Favoris.vue'
 import APropos from '../pages/APropos.vue'
 import NotFound from '../pages/NotFound.vue'
+import Login from '../pages/Login.vue'
+import AjouterJoueur from '../pages/AjouterJoueur.vue'
+import { useAuthStore } from '@/stores/authStore'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -21,7 +24,23 @@ const router = createRouter({
     {
       path: '/favoris',
       name: 'favoris',
-      component: Favoris
+      component: Favoris,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/ajouter',
+      name: 'ajouter',
+      component: AjouterJoueur,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
     },
     {
       path: '/a-propos',
@@ -34,6 +53,19 @@ const router = createRouter({
       component: NotFound
     }
   ]
+})
+
+router.beforeEach((to) => {
+  const authStore = useAuthStore()
+
+  if (to.meta.requiresAuth && !authStore.isLoggedIn) {
+    return {
+      name: 'login',
+      query: {
+        redirect: to.fullPath
+      }
+    }
+  }
 })
 
 export default router

@@ -27,7 +27,26 @@
       <div class="mr-4">
         <v-btn to="/" variant="text">Accueil</v-btn>
         <v-btn to="/favoris" variant="text">Favoris</v-btn>
+        <v-btn to="/ajouter" variant="text" v-if="authStore.isLoggedIn">Ajouter</v-btn>
         <v-btn to="/a-propos" variant="text">À propos</v-btn>
+
+        <v-btn
+            v-if="!authStore.isLoggedIn"
+            to="/login"
+            variant="outlined"
+            class="ml-2"
+        >
+          Connexion
+        </v-btn>
+
+        <v-btn
+            v-else
+            variant="outlined"
+            class="ml-2"
+            @click="logout"
+        >
+          Déconnexion
+        </v-btn>
       </div>
     </v-app-bar>
 
@@ -55,10 +74,15 @@
 </template>
 
 <script setup>
-// Année actuelle (pour le footer)
-const currentYear = new Date().getFullYear()
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/authStore'
 
-// IMPORTANT:
-// On ne lance plus playerStore.init() ici,
-// car cette action n'existe pas dans le store actuel.
+const currentYear = new Date().getFullYear()
+const router = useRouter()
+const authStore = useAuthStore()
+
+const logout = () => {
+  authStore.logout()
+  router.push('/')
+}
 </script>

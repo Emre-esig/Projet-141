@@ -1,12 +1,31 @@
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { usePlayerStore } from '@/stores/playerStore'
 
 const playerStore = usePlayerStore()
 
+const dialog = ref(false)
+const selectedPlayer = ref(null)
+const snackbar = ref(false)
+
 onMounted(() => {
   playerStore.loadFavorites()
 })
+
+const openDeleteDialog = (playerData) => {
+  selectedPlayer.value = playerData
+  dialog.value = true
+}
+
+const confirmDelete = () => {
+  if (selectedPlayer.value) {
+    playerStore.deleteFavorite(selectedPlayer.value.player?.id)
+    snackbar.value = true
+  }
+
+  dialog.value = false
+  selectedPlayer.value = null
+}
 </script>
 
 <template>
@@ -36,10 +55,10 @@ onMounted(() => {
           <v-btn
               class="position-absolute favorite-btn"
               style="top: 10px; right: 10px; z-index: 2;"
-              icon="mdi-heart"
+              icon="mdi-delete"
               color="red"
               variant="text"
-              @click="playerStore.toggleFavorite(playerData)"
+              @click="openDeleteDialog(playerData)"
           />
 
           <div class="d-flex justify-center align-center" style="height: 200px;">
@@ -75,10 +94,49 @@ onMounted(() => {
               <strong>Matchs:</strong>
               {{ playerData.statistics?.[0]?.games?.appearences ?? 0 }}
             </div>
+
+            <v-chip
+                v-if="playerData.custom"
+                color="primary"
+                variant="tonal"
+                class="mt-3"
+            >
+              Joueur personnalisé
+            </v-chip>
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
+
+    <v-dialog v-model="dialog" max-width="500">
+      <v-card>
+        <v-card-title class="text-h5">
+          Confirmer la suppression
+        </v-card-title>
+
+        <v-card-text>
+          Veux-tu vraiment supprimer
+          <strong>{{ selectedPlayer?.player?.name }}</strong>
+          de tes favoris ?
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer />
+
+          <v-btn variant="text" @click="dialog = false">
+            Annuler
+          </v-btn>
+
+          <v-btn color="red" variant="flat" @click="confirmDelete">
+            Supprimer
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-snackbar v-model="snackbar" color="success">
+      Joueur supprimé des favoris.
+    </v-snackbar>
   </v-container>
 </template>
 
