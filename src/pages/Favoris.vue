@@ -219,7 +219,7 @@ const confirmDelete = () => {
   margin-bottom: 28px;
   padding: 38px;
   background: linear-gradient(135deg, rgba(181, 44, 18, 0.92), rgba(18, 18, 18, 0.96)),
-  url('/football-bg.jpg');
+  url('/football-bg.png');
   background-size: cover;
   background-position: center;
   border: 1px solid rgba(255, 255, 255, 0.08);
