@@ -1,73 +1,54 @@
-# Rick & Morty Explorer
+# TopPlayers — Elite Football Stats
 
-Application Vue.js 3 + Vuetify 3 — code de départ pour le cours C141.
+Application Vue.js 3 + Vuetify 3 réalisée dans le cadre du cours C141.
 
-**[Voir la démo en ligne](https://fallinov.github.io/esig-141-demo-vuetify-api/)**
-
-![Page d'accueil](docs/screenshots/home.png)
+Cette application permet de consulter les meilleurs buteurs de plusieurs ligues européennes grâce à l’API Football.
 
 ## Objectif
 
-Compléter l'application en suivant les étapes du cours :
+Développer une application web moderne avec Vue.js et Vuetify en utilisant une API externe.
 
-0. **Config** — Palette de couleurs Rick & Morty + favicon
-1. **Découvrir l'API** — Requête GET dans Bruno, explorer le JSON
-2. **API + affichage** — Charger et afficher les personnages avec `fetch()`
-3. **Page statique** — Remplir la page À propos avec des composants Vuetify
-4. **Navigation** — Ajouter un menu de navigation latéral
-5. **Déploiement** — Déployer sur Vercel
-6. **Fiche détail** (bonus) — Route dynamique, page détail d'un personnage
+Fonctionnalités réalisées :
 
-La branche [`solution`](https://github.com/fallinov/esig-141-demo-vuetify-api/tree/solution) contient le résultat final. Voir [`etapes-demo.md`](etapes-demo.md) pour le guide complet.
+0. **Configuration** — Thème personnalisé football + favicon
+1. **Découverte de l’API** — Requêtes GET et exploration du JSON
+2. **API + affichage** — Chargement dynamique des meilleurs joueurs
+3. **Navigation** — Vue Router + navigation responsive mobile
+4. **Recherche & tri** — Filtrage des joueurs et tri dynamique
+5. **Favoris** — Gestion des favoris avec localStorage
+6. **Authentification** — Connexion simple avec Pinia
+7. **Protection de routes** — Accès sécurisé aux pages protégées
+8. **Ajout personnalisé** — Création de joueurs personnalisés
+9. **Suppression** — Confirmation avec dialogue Vuetify
+10. **Responsive design** — Compatible desktop et mobile
 
-## Aperçu de la solution
+## Aperçu de l'application
 
-| Page d'accueil | Fiche détail | À propos |
-|:-:|:-:|:-:|
-| ![Accueil](docs/screenshots/home.png) | ![Détail](docs/screenshots/character-detail.png) | ![À propos](docs/screenshots/about.png) |
+|                 Accueil                  | Ligue |                 Favoris                  |
+|:----------------------------------------:|:-:|:----------------------------------------:|
+| ![Accueil](docs/screenshots/accueil.png) | ![Ligue](docs/screenshots/league.png) | ![Favoris](docs/screenshots/favoris.png) |
+
+## Fonctionnalités principales
+
+- Affichage des ligues européennes
+- Consultation des meilleurs joueurs
+- Recherche par joueur
+- Recherche par équipe
+- Tri dynamique
+- Ajout de joueurs personnalisés
+- Sélection des équipes selon la ligue choisie
+- Gestion des favoris
+- Authentification simple
+- Protection des routes
+- Navigation responsive
+- Thème dark personnalisé
+- Sauvegarde locale avec localStorage
+- Gestion des erreurs et chargements
 
 ## Installation
 
 ```bash
-git clone https://github.com/fallinov/esig-141-demo-vuetify-api.git
-cd esig-141-demo-vuetify-api
+git clone https://github.com/ton-projet/topplayers.git
+cd topplayers
 npm install
 npm run dev
-```
-
-L'application s'ouvre sur [http://localhost:3000](http://localhost:3000).
-
-## Structure
-
-```
-public/
-├── favicon.ico          # Favicon multi-tailles (16, 32, 48px)
-└── favicon.png          # Favicon PNG (silhouettes Rick & Morty)
-src/
-├── App.vue              # Layout (app-bar + footer)
-├── main.js              # Point d'entrée
-├── pages/
-│   ├── index.vue        # TODO : Liste des personnages (route /)
-│   └── about.vue        # TODO : Page statique (route /about)
-├── plugins/
-│   ├── index.js         # Enregistrement des plugins
-│   └── vuetify.js       # Configuration Vuetify (dark theme)
-├── router/
-│   └── index.js         # Routes auto-générées (unplugin-vue-router)
-└── stores/
-    └── index.js         # Pinia store
-```
-
-## API Rick and Morty
-
-- **URL** : [`https://rickandmortyapi.com/api/character`](https://rickandmortyapi.com/api/character)
-- **Documentation** : [rickandmortyapi.com/documentation](https://rickandmortyapi.com/documentation)
-- **Réponse** : `{ info: {...}, results: [...] }`
-- **Champs utiles** : `id`, `name`, `status`, `species`, `image`
-
-## Stack
-
-- [Vue.js 3](https://vuejs.org/) — Composition API
-- [Vuetify 3](https://vuetifyjs.com/) — Composants Material Design
-- [Vue Router 4](https://router.vuejs.org/) + unplugin-vue-router (routage automatique)
-- [Vite](https://vitejs.dev/) — Build tool

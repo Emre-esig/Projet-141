@@ -7,16 +7,34 @@ export default createVuetify({
     defaultTheme: 'dark',
     themes: {
       dark: {
+        dark: true,
         colors: {
-          primary: '#B52C12',    // Bleu turquoise (portail, logo R&M)
-          secondary: '#FFFFFF',  // Blanc
-          accent: '#000000',     // Noir
-          error: '#E63946',      // Rouge (lasers, danger)
-          info: '#44CFCB',       // Cyan clair
-          success: '#97CE4C',    // Vert (même que secondary)
-          warning: '#FFA724',    // Orange
-        },
-      },
-    },
+          background: '#121212',
+          surface: '#1E1E1E',
+          primary: '#B52C12',
+          secondary: '#FFFFFF',
+          accent: '#000000',
+          error: '#E63946',
+          info: '#44CFCB',
+          success: '#97CE4C',
+          warning: '#FFA724'
+        }
+      }
+    }
   },
+  defaults: {
+    VCard: {
+      rounded: 'lg',
+      elevation: 3
+    },
+    VBtn: {
+      rounded: 'lg'
+    },
+    VTextField: {
+      density: 'comfortable'
+    },
+    VSelect: {
+      density: 'comfortable'
+    }
+  }
 })

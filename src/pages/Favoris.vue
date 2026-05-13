@@ -51,9 +51,9 @@ const confirmDelete = () => {
           sm="6"
           md="4"
       >
-        <v-card class="h-100 pa-2 position-relative">
+        <v-card class="h-100 pa-3 position-relative player-card">
           <v-btn
-              class="position-absolute favorite-btn"
+              class="position-absolute delete-btn"
               style="top: 10px; right: 10px; z-index: 2;"
               icon="mdi-delete"
               color="red"
@@ -78,39 +78,55 @@ const confirmDelete = () => {
             </v-img>
           </div>
 
-          <v-card-title class="text-subtitle-1 font-weight-bold">
+          <v-card-title class="text-subtitle-1 font-weight-bold text-center">
             {{ playerData.player?.name || 'Joueur inconnu' }}
           </v-card-title>
 
-          <v-card-subtitle>
-            Equipe:
-            {{ playerData.statistics?.[0]?.team?.name || 'Non disponible' }}
+          <v-card-subtitle class="text-center mb-3">
+            {{ playerData.statistics?.[0]?.team?.name || 'Équipe non disponible' }}
           </v-card-subtitle>
 
           <v-card-text>
-            <div>
-              <strong>Buts:</strong>
-              {{ playerData.statistics?.[0]?.goals?.total ?? 0 }}
+            <div class="stats-grid">
+              <div class="stat-box">
+                <span class="stat-number">
+                  {{ playerData.statistics?.[0]?.goals?.total ?? 0 }}
+                </span>
+                <span class="stat-label">Buts</span>
+              </div>
+
+              <div class="stat-box">
+                <span class="stat-number">
+                  {{ playerData.statistics?.[0]?.goals?.assists ?? 0 }}
+                </span>
+                <span class="stat-label">Passes</span>
+              </div>
+
+              <div class="stat-box">
+                <span class="stat-number">
+                  {{ playerData.statistics?.[0]?.games?.appearences ?? 0 }}
+                </span>
+                <span class="stat-label">Matchs</span>
+              </div>
             </div>
 
-            <div>
-              <strong>Passes decisives:</strong>
-              {{ playerData.statistics?.[0]?.goals?.assists ?? 0 }}
-            </div>
+            <div class="text-center mt-4">
+              <v-chip
+                  v-if="playerData.custom"
+                  color="primary"
+                  variant="tonal"
+              >
+                Joueur personnalisé
+              </v-chip>
 
-            <div>
-              <strong>Matchs:</strong>
-              {{ playerData.statistics?.[0]?.games?.appearences ?? 0 }}
+              <v-chip
+                  v-else
+                  color="info"
+                  variant="tonal"
+              >
+                API Football
+              </v-chip>
             </div>
-
-            <v-chip
-                v-if="playerData.custom"
-                color="primary"
-                variant="tonal"
-                class="mt-3"
-            >
-              Joueur personnalisé
-            </v-chip>
           </v-card-text>
         </v-card>
       </v-col>
@@ -149,11 +165,45 @@ const confirmDelete = () => {
 </template>
 
 <style scoped>
-.favorite-btn {
+.player-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.player-card:hover {
+  transform: translateY(-4px);
+}
+
+.delete-btn {
   transition: transform 0.2s ease;
 }
 
-.favorite-btn:hover {
+.delete-btn:hover {
   transform: scale(1.25);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.stat-box {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.stat-label {
+  display: block;
+  font-size: 12px;
+  color: #bdbdbd;
 }
 </style>
