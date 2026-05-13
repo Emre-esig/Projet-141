@@ -89,46 +89,55 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-container>
-    <v-card class="mb-6 pa-4 league-header-card" variant="tonal">
-      <div v-if="league" class="league-header">
-        <v-btn
-            class="back-btn"
-            prepend-icon="mdi-arrow-left"
-            variant="outlined"
-            @click="goHome"
-        >
-          Retour
-        </v-btn>
+  <v-container class="league-page">
+    <section v-if="league" class="league-hero">
+      <v-btn
+          class="back-btn"
+          prepend-icon="mdi-arrow-left"
+          variant="outlined"
+          @click="goHome"
+      >
+        Retour
+      </v-btn>
 
-        <div class="league-info text-center">
+      <div class="league-hero-content">
+        <div class="league-logo-wrapper">
           <v-img
               :src="league.logo"
               :alt="`Logo ${league.name}`"
-              width="80"
-              height="80"
-              class="mx-auto mb-2"
+              width="90"
+              height="90"
               contain
           />
+        </div>
 
-          <h1 class="text-h4 mb-1">{{ league.name }}</h1>
+        <p class="eyebrow">Championnat</p>
 
-          <p class="text-subtitle-1 text-medium-emphasis mb-0">
-            {{ league.country }}
-          </p>
+        <h1>{{ league.name }}</h1>
 
-          <v-chip color="primary" variant="flat" class="mt-3">
+        <p class="country">
+          {{ league.country }}
+        </p>
+
+        <div class="hero-chips">
+          <v-chip color="primary" variant="flat">
             {{ filteredPlayers.length }} joueurs affichés
+          </v-chip>
+
+          <v-chip color="info" variant="tonal">
+            Saison 2024 - 2025
           </v-chip>
         </div>
       </div>
 
-      <v-alert v-else type="warning" variant="tonal">
-        Ligue introuvable pour l'id: {{ route.params.id }}
-      </v-alert>
-    </v-card>
+      <v-icon class="hero-ball" icon="mdi-soccer" />
+    </section>
 
-    <v-card class="mb-6 pa-4">
+    <v-alert v-else type="warning" variant="tonal" class="mb-6">
+      Ligue introuvable pour l'id: {{ route.params.id }}
+    </v-alert>
+
+    <v-card class="filters-card pa-4 mb-6">
       <v-row>
         <v-col cols="12" md="4">
           <v-text-field
@@ -193,10 +202,11 @@ onMounted(() => {
           sm="6"
           md="4"
       >
-        <v-card class="h-100 pa-3 position-relative player-card">
+        <v-card class="player-card h-100">
+          <div class="card-top-line" />
+
           <v-btn
               class="position-absolute favorite-btn"
-              style="top: 10px; right: 10px; z-index: 2;"
               :icon="playerStore.isFavorite(playerData.player?.id) ? 'mdi-heart' : 'mdi-heart-outline'"
               :color="playerStore.isFavorite(playerData.player?.id) ? 'red' : 'grey'"
               variant="text"
@@ -205,36 +215,36 @@ onMounted(() => {
 
           <v-btn
               v-if="playerData.custom && authStore.isLoggedIn"
-              class="position-absolute"
-              style="top: 50px; right: 10px; z-index: 2;"
+              class="position-absolute delete-btn"
               icon="mdi-delete"
               color="red"
               variant="text"
               @click="playerStore.deleteCustomPlayer(playerData.player?.id)"
           />
 
-          <div class="d-flex justify-center align-center" style="height: 200px;">
+          <div class="player-image-wrapper">
             <v-img
                 :src="playerData.player?.photo"
                 :alt="`Photo de ${playerData.player?.name || 'joueur'}`"
-                max-width="140"
+                max-width="145"
                 contain
             >
               <template #error>
                 <v-img
                     src="/default-player.jpg"
-                    max-width="140"
+                    max-width="145"
                     contain
                 />
               </template>
             </v-img>
           </div>
 
-          <v-card-title class="text-subtitle-1 font-weight-bold text-center">
+          <v-card-title class="player-name">
             {{ playerData.player?.name || 'Joueur inconnu' }}
           </v-card-title>
 
-          <v-card-subtitle class="text-center mb-3">
+          <v-card-subtitle class="player-team">
+            <v-icon icon="mdi-shield" size="16" class="mr-1" />
             {{ playerData.statistics?.[0]?.team?.name || 'Équipe non disponible' }}
           </v-card-subtitle>
 
@@ -267,6 +277,7 @@ onMounted(() => {
                   v-if="playerData.custom"
                   color="primary"
                   variant="tonal"
+                  size="small"
               >
                 Joueur personnalisé
               </v-chip>
@@ -275,6 +286,7 @@ onMounted(() => {
                   v-else
                   color="info"
                   variant="tonal"
+                  size="small"
               >
                 API Football
               </v-chip>
@@ -293,59 +305,181 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.league-header-card {
-  position: relative;
+.league-page {
+  max-width: 1200px;
+  padding-top: 32px;
+  padding-bottom: 70px;
 }
 
-.league-header {
+.league-hero {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
+  min-height: 240px;
+  border-radius: 28px;
+  margin-bottom: 26px;
+  padding: 34px;
+  background:
+      linear-gradient(135deg, rgba(181, 44, 18, 0.92), rgba(18, 18, 18, 0.96)),
+      url('/football-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.league-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 34px 34px;
+  pointer-events: none;
 }
 
 .back-btn {
-  position: absolute;
-  left: 0;
+  position: relative;
+  z-index: 2;
 }
 
-.league-info {
-  width: 100%;
+.league-hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  margin-top: -8px;
+}
+
+.league-logo-wrapper {
+  width: 115px;
+  height: 115px;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.eyebrow {
+  color: #ffffff;
+  opacity: 0.85;
+  text-transform: uppercase;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.league-hero h1 {
+  font-size: 42px;
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+.country {
+  color: #eeeeee;
+  margin-bottom: 16px;
+}
+
+.hero-chips {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.hero-ball {
+  position: absolute;
+  right: 42px;
+  bottom: -28px;
+  font-size: 190px;
+  opacity: 0.12;
+  transform: rotate(-18deg);
+}
+
+.filters-card {
+  border: 1px solid rgba(181, 44, 18, 0.25);
 }
 
 .player-card {
+  position: relative;
+  overflow: hidden;
+  padding: 22px;
+  background: linear-gradient(180deg, #202020, #191919);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .player-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
+  box-shadow: 0 14px 30px rgba(181, 44, 18, 0.18);
+}
+
+.card-top-line {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: linear-gradient(90deg, #B52C12, #ff4b3e);
 }
 
 .favorite-btn {
+  top: 12px;
+  right: 12px;
+  z-index: 2;
   transition: transform 0.2s ease;
 }
 
-.favorite-btn:hover {
-  transform: scale(1.25);
+.delete-btn {
+  top: 52px;
+  right: 12px;
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+
+.favorite-btn:hover,
+.delete-btn:hover {
+  transform: scale(1.2);
+}
+
+.player-image-wrapper {
+  height: 190px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.player-name {
+  text-align: center;
+  font-weight: 900;
+  font-size: 18px;
+  padding-bottom: 4px;
+}
+
+.player-team {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #bdbdbd;
+  margin-bottom: 12px;
 }
 
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  gap: 9px;
 }
 
 .stat-box {
-  background-color: rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
-  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 12px 8px;
   text-align: center;
 }
 
 .stat-number {
   display: block;
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 22px;
+  font-weight: 900;
   color: #ffffff;
 }
 
@@ -355,15 +489,21 @@ onMounted(() => {
   color: #bdbdbd;
 }
 
-@media (max-width: 600px) {
-  .league-header {
-    flex-direction: column;
-    gap: 16px;
+@media (max-width: 800px) {
+  .league-hero {
+    padding: 24px;
+  }
+
+  .league-hero h1 {
+    font-size: 32px;
+  }
+
+  .hero-ball {
+    display: none;
   }
 
   .back-btn {
-    position: static;
-    align-self: flex-start;
+    margin-bottom: 18px;
   }
 }
 </style>
