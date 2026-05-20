@@ -145,7 +145,7 @@ const logoutMobile = () => {
         <!-- Logo -->
         <v-img
 
-            src="/cr7-logo-png-transparent.png"
+            src="/assets/cr7-logo-png-transparent.png"
 
             width="45"
 

@@ -246,7 +246,7 @@ const addPlayer = async () => {
   padding: 38px;
   background:
       linear-gradient(135deg, rgba(181, 44, 18, 0.92), rgba(18, 18, 18, 0.96)),
-      url('/football-bg.png');
+      url('/assets/football-bg.png');
   background-size: cover;
   background-position: center;
   border: 1px solid rgba(255, 255, 255, 0.08);

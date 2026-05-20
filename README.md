@@ -1,4 +1,11 @@
 # TopPlayers — Elite Football Stats
+# TopPlayers — Elite Football Stats
+
+![Accueil TopPlayers](docs/screenshots/accueil.png)
+
+Application Vue.js 3 + Vuetify 3 réalisée dans le cadre du cours C141.
+
+Cette application permet de consulter les meilleurs buteurs de plusieurs ligues européennes grâce à l’API Football.
 
 Application Vue.js 3 + Vuetify 3 réalisée dans le cadre du cours C141.
 

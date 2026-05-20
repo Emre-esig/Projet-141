@@ -7,7 +7,7 @@ import { defineStore } from 'pinia'
 import api from '@/plugins/axios'
 
 // Image utilisée quand un joueur personnalisé n'a pas de photo.
-const DEFAULT_PLAYER_IMAGE = '/default-player.jpg'
+const DEFAULT_PLAYER_IMAGE = '/assets/default-player.jpg'
 
 // Création du store Pinia appelé "player".
 // Dans les composants, on l'utilise avec usePlayerStore().

@@ -193,7 +193,7 @@ const playerStore = usePlayerStore()
   /* Fond avec dégradé + image football */
   background:
       linear-gradient(135deg, rgba(181, 44, 18, 0.9), rgba(18, 18, 18, 0.95)),
-      url('/football-bg.png');
+      url('/assets/football-bg.png');
 
   /* L'image couvre toute la zone */
   background-size: cover;
