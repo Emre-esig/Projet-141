@@ -1,52 +1,141 @@
 <script setup>
-// On reçoit les données d’un joueur depuis le parent
+
+// =====================================================
+// PlayerCard.vue
+//
+// Ce composant affiche les informations
+// d’un joueur sous forme de carte.
+//
+// Il est utilisé pour afficher :
+// - les joueurs API
+// - les joueurs favoris
+// - les joueurs personnalisés
+// =====================================================
+
+// =====================================================
+// DEFINE PROPS
+// =====================================================
+
+/*
+  defineProps()
+
+  permet de recevoir des données
+  depuis le composant parent.
+*/
+
+/*
+  Exemple :
+
+  <PlayerCard :playerData="player" />
+*/
 defineProps({
+
+  // Objet contenant toutes les données du joueur
   playerData: Object
 })
 </script>
 
 <template>
-  <!-- Carte joueur -->
+
+  <!-- ==========================================
+       CARTE JOUEUR
+  ========================================== -->
+
   <v-card class="pa-4 h-100">
 
-    <!-- Photo du joueur -->
+    <!-- ==========================================
+         PHOTO JOUEUR
+    ========================================== -->
+
+    <!--
+      v-img :
+
+      composant image Vuetify.
+    -->
+
+    <!--
+      playerData.player.photo
+
+      URL image joueur venant de l'API.
+    -->
     <v-img
         :src="playerData.player.photo"
         height="180"
         cover
     />
+    <!-- ==========================================
+         NOM JOUEUR
+    ========================================== -->
 
-    <!-- Nom du joueur -->
     <v-card-title>
+
+      <!-- Exemple : Mohamed Salah -->
       {{ playerData.player.name }}
+
     </v-card-title>
+    <!-- ==========================================
+         NOM EQUIPE
+    ========================================== -->
 
-    <!-- Nom de l'équipe -->
     <v-card-subtitle>
+
+      <!-- Exemple : Liverpool -->
       {{ playerData.statistics[0].team.name }}
+
     </v-card-subtitle>
+    <!-- ==========================================
+         STATISTIQUES
+    ========================================== -->
 
-    <!-- Statistiques -->
     <v-card-text>
+      <!-- ==========================================
+           MATCHS JOUES
+      ========================================== -->
 
-      <!-- Matchs joués -->
       <div>
-        Matchs : {{ playerData.statistics[0].games.appearances || 0 }}
+
+        <!--
+          || 0
+
+          si la valeur n'existe pas,
+          affiche 0.
+        -->
+        Matchs :
+        {{ playerData.statistics[0].games.appearances || 0 }}
+
       </div>
 
-      <!-- Buts -->
+      <!-- ==========================================
+           BUTS
+      ========================================== -->
+
       <div>
-        Buts : {{ playerData.statistics[0].goals.total || 0 }}
+
+        Buts :
+        {{ playerData.statistics[0].goals.total || 0 }}
+
       </div>
 
-      <!-- Passes décisives -->
+      <!-- ==========================================
+           PASSES DECISIVES
+      ========================================== -->
+
       <div>
-        Passes : {{ playerData.statistics[0].goals.assists || 0 }}
+
+        Passes :
+        {{ playerData.statistics[0].goals.assists || 0 }}
+
       </div>
 
-      <!-- Minutes jouées -->
+      <!-- ==========================================
+           MINUTES JOUEES
+      ========================================== -->
+
       <div>
-        Minutes : {{ playerData.statistics[0].games.minutes || 0 }}
+
+        Minutes :
+        {{ playerData.statistics[0].games.minutes || 0 }}
+
       </div>
 
     </v-card-text>
